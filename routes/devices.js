@@ -3,12 +3,15 @@ const router = express.Router();
 const {getDevicesForUser} = require('../controllers/devices.controller');
 
 /* GET devices for user. */
-router.get('/:identifier', (req, res, next) => {
-  const identifier = req.params.identifier
-  const response = {
-    id: getDevicesForUser(identifier)
+router.get('/:userIdentifier', async(req, res, next) => {
+  const userIdentifier = req.params.userIdentifier;
+
+  if (!userIdentifier) {
+    res.status(400).message('User identifier expected');
+    res.end();
   }
-  res.send(response);
+  const result = await getDevicesForUser(userIdentifier);
+  res.send(result);
 });
 
 module.exports = router;
