@@ -3,15 +3,23 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
+    "test": "mocha",
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "chai": "^4.3.6",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "helmet": "^5.0.2",
     "http-errors": "~1.6.3",
+    "mocha": "^10.0.0",
     "morgan": "~1.9.1",
     "node-fetch": "^2.6.7",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "chai-http": "^4.3.0"
   }
 }
