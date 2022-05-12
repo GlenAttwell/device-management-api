@@ -11,7 +11,7 @@ class Devices {
   }
 }
 
-class UserEntitlement {
+class UserEntitlementModel {
   constructor(userId, entitlements) {
     this.userId = userId;
     this.entitlements = entitlements;
@@ -19,7 +19,7 @@ class UserEntitlement {
 }
 
 module.exports = {
-  UserEntitlement,
+  UserEntitlement: UserEntitlementModel,
   Devices,
   Entitlements
 }
