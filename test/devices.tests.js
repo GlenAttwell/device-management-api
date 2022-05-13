@@ -52,7 +52,7 @@ describe('devicesAPI', () => {
 
     it('should return a not found if the request is incomplete',  (done) => {
       chai.request(server)
-        .get(`/devices/${validUserId}/`)
+        .post(`/devices/${validUserId}/`)
         .end((err, response) => {
           response.should.have.status(404);
           done();
@@ -60,33 +60,74 @@ describe('devicesAPI', () => {
     });
   });
 
-  // describe('Test PUT User Devices', () => {
-  //   it('should add a device to the list of user devices', (done) => {
-  //     chai.request(server)
-  //       .get(`/devices/${validUserId}`)
-  //       .end((err, response) => {
-  //         response.should.have.status(200);
-  //         response.body.should.be.a('array');
-  //         response.body.length.should.not.eq(2);
-  //       });
-  //
-  //     chai.request(server)
-  //       .post(`/devices/${validUserId}/new-device`)
-  //       .end((err, response) => {
-  //         response.should.have.status(200);
-  //         response.body.should.be.a('array');
-  //         response.body.length.should.be.eq(3);
-  //         done();
-  //       });
-  //   });
-  //
-  //   it('should return a not found if the request is incomplete',  (done) => {
-  //     chai.request(server)
-  //       .get(`/devices/${validUserId}/`)
-  //       .end((err, response) => {
-  //         response.should.have.status(404);
-  //         done();
-  //       });
-  //   });
-  // });
+  describe('Test PUT User Devices', () => {
+    it('should update a device name for a user', (done) => {
+      const deviceName = 'new-device';
+      const updatedDeviceName = 'updated-device';
+      let userDevices = [];
+      chai.request(server)
+        .post(`/devices/${validUserId}/${deviceName}`)
+        .end((err, response) => {
+          response.should.have.status(200);
+          userDevices = response.body;
+
+          const newDevice = userDevices.find(d => d.deviceName === deviceName);
+
+          chai.request(server)
+            .put(`/devices/${validUserId}/${newDevice.deviceId}/${updatedDeviceName}`)
+            .end((err, response) => {
+              response.should.have.status(200);
+              response.body.should.be.a('array');
+              response.body.length.should.be.eq(3);
+              const updatedDevice = response.body.find(d => d.deviceId === newDevice.deviceId);
+              updatedDevice.should.not.eq(null);
+              updatedDevice.deviceName.should.eq(updatedDeviceName)
+              done();
+            });
+        });
+    });
+  });
+
+  describe('Test DELETE User Devices', () => {
+    it('should delete a device for a user', (done) => {
+      const deviceName = 'new-device';
+      chai.request(server)
+        .post(`/devices/${validUserId}/${deviceName}`)
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.be.a('array');
+          response.body.length.should.be.eq(3);
+
+          const newDevice = response.body.find(d => d.deviceName === deviceName);
+
+          chai.request(server)
+            .delete(`/devices/${validUserId}/${newDevice.deviceId}`)
+            .end((err, response) => {
+              response.should.have.status(200);
+              response.body.should.be.a('array');
+              response.body.length.should.be.eq(2);
+              response.body.findIndex(d => d.deviceId === newDevice.deviceId).should.eq(-1);
+              done();
+            });
+        });
+    });
+
+    it('should return an not found when no userId is provided ', (done) => {
+      const deviceName = 'new-device';
+      chai.request(server)
+        .post(`/devices/${validUserId}/${deviceName}`)
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.be.a('array');
+          response.body.length.should.be.eq(3);
+
+          chai.request(server)
+            .delete(`/devices/${validUserId}/`)
+            .end((err, response) => {
+              response.should.have.status(404);
+              done();
+            });
+        });
+    });
+  });
 });

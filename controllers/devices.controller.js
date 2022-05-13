@@ -54,7 +54,7 @@ function updateDeviceForUser(userIdentifier, deviceId, newDeviceName) {
     throw Error('device not found');
   }
   users[userIndex].devices[deviceIndex].deviceName = newDeviceName
-  return users[userIndex].devices[deviceIndex];
+  return users[userIndex].devices;
 }
 
 function deleteDeviceForUser(userIdentifier, deviceId) {
@@ -68,7 +68,7 @@ function deleteDeviceForUser(userIdentifier, deviceId) {
     throw Error('device not found');
   }
 
-  users[userIndex].devices = users[userIndex].devices.splice(d => d.deviceId !== deviceId)
+  users[userIndex].devices = users[userIndex].devices.filter(d => d.deviceId !== deviceId)
   return users[userIndex].devices;
 }
 
